@@ -1,5 +1,8 @@
 # Intro
 
+![Alt text](sample_rick.jpeg?raw=true "Title")
+
+
 This project uses Android studio 3.5 and targets api 28
 
 To run please sync with gradle to grab dependencies
