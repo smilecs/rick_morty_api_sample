@@ -14,7 +14,7 @@ feature target of a class.
 
 ## Libraries
 
-- Ketro(Personal library available on my github and Jcenter) : For request wrapping and error handling
+- Ketro https://smilecs.github.io/ketro/ (Personal library available on my github and Jcenter) : For request wrapping and error handling
 - Coroutines : For background processing
 - Dagger : Dependency injection
 - Coil: For Image loading (Uses Coroutines internally)
