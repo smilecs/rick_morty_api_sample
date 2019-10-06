@@ -1,0 +1,13 @@
+<resources>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="app_name">Rick Morty</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="error_generic">Something went wrong</string>
+    <string name="name_label">Name: %s</string>
+    <string name="gender_label">Gender: %s</string>
+    <string name="type_label">Label: %s</string>
+    <string name="status_label">Status: %s</string>
+</resources>

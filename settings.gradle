@@ -1,0 +1,2 @@
+include ':app', ':presentation', ':data', ':domain'
+rootProject.name='rick_morty'
