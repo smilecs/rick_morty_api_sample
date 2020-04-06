@@ -7,6 +7,8 @@ interface CharacterRepository {
 
     suspend fun getCharacterList(): Wrapper<List<Character>>
 
+    suspend fun getCharactersRemote(): Wrapper<List<Character>>
+
     suspend fun loadCached(): List<Character>
 
     suspend fun saveImage(id: Int, image: String)

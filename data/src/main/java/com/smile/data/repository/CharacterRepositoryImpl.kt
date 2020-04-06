@@ -13,6 +13,16 @@ class CharacterRepositoryImpl @Inject constructor(
 ) : CharacterRepository {
 
     override suspend fun getCharacterList(): Wrapper<List<Character>> {
+        val resp = getCharactersRemote()
+        val characterList = resp.data ?: loadCached()
+        return if (characterList.isEmpty()) {
+            resp
+        } else {
+            Wrapper<List<Character>>(data = characterList, statusCode = resp.statusCode)
+        }
+    }
+
+    override suspend fun getCharactersRemote(): Wrapper<List<Character>> {
         val resp = remoteDataSource.getCharacters()
         resp.data?.let {
             localDataSource.save(it)

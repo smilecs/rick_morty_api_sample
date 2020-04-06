@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.past3.ketro.kcore.model.Wrapper
 import com.past3.ketro.kcore.model.mapObject
-import com.smile.domain.usecase.GetCharactersCacheUseCase
 import com.smile.domain.usecase.GetCharactersUseCase
 import com.smile.domain.usecase.UpdateImageParams
 import com.smile.domain.usecase.UpdateLocalImageUseCase
@@ -18,7 +17,6 @@ import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
     private val getCharactersUseCase: GetCharactersUseCase,
-    private val loadCharactersCacheUseCase: GetCharactersCacheUseCase,
     private val imageUseCase: UpdateLocalImageUseCase
 ) : BaseViewModel() {
 
@@ -30,19 +28,11 @@ class MainViewModel @Inject constructor(
     }
 
     private fun getCharacters() {
-        scope.launch(handler(::loadCachedCharacters)) {
+        scope.launch(handler()) {
             val resp = getCharactersUseCase(Unit).run {
                 CharacterToUIMapper().mapObject(this)
             }
             uiScope.launch { _characterLiveData.value = resp }
-        }
-    }
-
-    private fun loadCachedCharacters() {
-        scope.launch(handler()) {
-            val cachedData = loadCharactersCacheUseCase(Unit)
-            CharacterToUIMapper().mapObject(Wrapper(data = cachedData))
-                .run { _characterLiveData.postValue(this) }
         }
     }
 
