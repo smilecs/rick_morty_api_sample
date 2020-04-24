@@ -3,8 +3,7 @@ package com.smile.presentation
 import android.graphics.drawable.Drawable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.past3.ketro.kcore.model.Wrapper
-import com.past3.ketro.kcore.model.mapObject
+import com.past3.ketro.api.LiveDataHandler
 import com.smile.domain.usecase.GetCharactersUseCase
 import com.smile.domain.usecase.UpdateImageParams
 import com.smile.domain.usecase.UpdateLocalImageUseCase
@@ -20,8 +19,9 @@ class MainViewModel @Inject constructor(
     private val imageUseCase: UpdateLocalImageUseCase
 ) : BaseViewModel() {
 
-    private val _characterLiveData = MutableLiveData<Wrapper<List<CharacterUI>>>()
-    val characterLiveData: LiveData<Wrapper<List<CharacterUI>>> = _characterLiveData
+    private val _characterLiveData = MutableLiveData<List<CharacterUI>>()
+    val characterLiveData: LiveData<List<CharacterUI>> = _characterLiveData
+    private val liveDataHandler = LiveDataHandler(failure)
 
     init {
         getCharacters()
@@ -29,10 +29,14 @@ class MainViewModel @Inject constructor(
 
     private fun getCharacters() {
         scope.launch(handler()) {
-            val resp = getCharactersUseCase(Unit).run {
-                CharacterToUIMapper().mapObject(this)
+            val resp = getCharactersUseCase()
+            uiScope.launch {
+                liveDataHandler.parse(resp) { data ->
+                    data?.let {
+                        _characterLiveData.value = CharacterToUIMapper().mapFrom(it)
+                    }
+                }
             }
-            uiScope.launch { _characterLiveData.value = resp }
         }
     }
 

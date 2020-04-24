@@ -53,27 +53,18 @@ class MainActivityFragment : BaseFragment() {
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = characterAdapter
         populateData()
+        errorHandler()
     }
 
     private fun populateData() {
-        viewModel.characterLiveData.observe(this,
-            object : Kobserver<List<CharacterUI>>() {
+        viewModel.characterLiveData.observe(this, Observer {
+            characterItems.addAll(it)
+            characterAdapter?.notifyDataSetChanged()
+        })
+    }
 
-                override fun onException(exception: Exception) {
-                    super.onException(exception)
-                    val msg = exception.message ?: getString(R.string.error_generic)
-                    Toast.makeText(context, msg, Toast.LENGTH_LONG)
-                        .show()
-                }
-
-                override fun onSuccess(data: List<CharacterUI>) {
-                    characterItems.addAll(data)
-                    characterAdapter?.notifyDataSetChanged()
-                }
-
-            })
-
-        viewModel.failure.observe(this, Observer {
+    private fun errorHandler() {
+        viewModel.failureLiveData.observe(this, Observer {
             Toast.makeText(context, getString(R.string.error_generic), Toast.LENGTH_LONG).show()
         })
     }

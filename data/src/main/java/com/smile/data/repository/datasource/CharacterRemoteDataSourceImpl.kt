@@ -2,7 +2,7 @@ package com.smile.data.repository.datasource
 
 
 import com.past3.ketro.api.Request
-import com.past3.ketro.kcore.model.Wrapper
+import com.past3.ketro.kcore.model.KResponse
 import com.past3.ketro.kcore.model.mapObject
 import com.smile.data.api.CharactersResultResponse
 import com.smile.data.api.RickMortyAPI
@@ -17,13 +17,13 @@ class CharacterRemoteDataSourceImpl @Inject constructor(
     private val rickMortyAPI: RickMortyAPI
 ) : CharacterRemoteDataSource {
 
-    override suspend fun getCharacters(): Wrapper<List<Character>> {
+    override suspend fun getCharacters(): KResponse<List<Character>> {
         val req = object : Request<CharactersResultResponse>(
             RickMortyGeneralErrorHandler()
         ) {
             override suspend fun apiRequest(): Response<CharactersResultResponse> =
                 rickMortyAPI.getCharacters()
-        }.doRequest()
+        }.execute()
         return CharacterResultResponseMapper()
             .mapObject(req)
     }

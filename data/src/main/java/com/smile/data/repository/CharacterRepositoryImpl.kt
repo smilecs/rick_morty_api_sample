@@ -1,5 +1,6 @@
 package com.smile.data.repository
 
+import com.past3.ketro.kcore.model.KResponse
 import com.past3.ketro.kcore.model.Wrapper
 import com.smile.domain.repository.CharacterLocalDataSource
 import com.smile.domain.repository.CharacterRemoteDataSource
@@ -12,19 +13,20 @@ class CharacterRepositoryImpl @Inject constructor(
     private val localDataSource: CharacterLocalDataSource
 ) : CharacterRepository {
 
-    override suspend fun getCharacterList(): Wrapper<List<Character>> {
+    override suspend fun getCharacterList(): KResponse<List<Character>> {
         val resp = getCharactersRemote()
-        val characterList = resp.data ?: loadCached()
+        val data = (resp as? KResponse.Success)?.data
+        val characterList = data ?: loadCached()
         return if (characterList.isEmpty()) {
             resp
         } else {
-            Wrapper<List<Character>>(data = characterList, statusCode = resp.statusCode)
+            KResponse.Success(data = loadCached(), statusCode = resp.statusCode)
         }
     }
 
-    override suspend fun getCharactersRemote(): Wrapper<List<Character>> {
+    override suspend fun getCharactersRemote(): KResponse<List<Character>> {
         val resp = remoteDataSource.getCharacters()
-        resp.data?.let {
+        (resp as? KResponse.Success)?.data?.let {
             localDataSource.save(it)
         }
         return resp
