@@ -59,14 +59,13 @@ class MainActivityFragment : BaseFragment() {
     }
 
     private fun populateData() {
-        viewModel.characterLiveData.observe(this, Observer {
-            viewModel.characterItems.addAll(it)
+        viewModel.characterLiveData.observe(viewLifecycleOwner, Observer {
             characterAdapter?.notifyDataSetChanged()
         })
     }
 
     private fun errorHandler() {
-        viewModel.failureLiveData.observe(this, Observer {
+        viewModel.failureLiveData.observe(viewLifecycleOwner, Observer {
             Toast.makeText(context, getString(R.string.error_generic), Toast.LENGTH_LONG).show()
         })
     }

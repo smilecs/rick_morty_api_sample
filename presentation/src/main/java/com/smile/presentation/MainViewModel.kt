@@ -4,6 +4,8 @@ import android.graphics.drawable.Drawable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.past3.ketro.api.LiveDataHandler
+import com.past3.ketro.kcore.model.KResponse
+import com.smile.domain.entities.Character
 import com.smile.domain.usecase.GetCharactersUseCase
 import com.smile.domain.usecase.UpdateImageParams
 import com.smile.domain.usecase.UpdateLocalImageUseCase
@@ -11,7 +13,10 @@ import com.smile.presentation.base.BaseViewModel
 import com.smile.presentation.uimodel.CharacterToUIMapper
 import com.smile.presentation.uimodel.CharacterUI
 import com.smile.presentation.util.drawableToBase64
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
@@ -21,7 +26,7 @@ class MainViewModel @Inject constructor(
 
     private val _characterLiveData = MutableLiveData<List<CharacterUI>>()
     val characterLiveData: LiveData<List<CharacterUI>> = _characterLiveData
-    private val liveDataHandler = LiveDataHandler(failure)
+    private val liveDataHandler = LiveDataHandler(_failureLiveData)
     val characterItems = mutableListOf<CharacterUI>()
 
     init {
@@ -30,14 +35,22 @@ class MainViewModel @Inject constructor(
 
     private fun getCharacters() {
         scope.launch(handler()) {
-            val resp = getCharactersUseCase()
-            uiScope.launch {
-                liveDataHandler.parse(resp) { data ->
-                    data?.let {
-                        _characterLiveData.value = CharacterToUIMapper().mapFrom(it)
-                    }
-                }
+            val resp: KResponse<List<Character>> = getCharactersUseCase()
+            withContext(Dispatchers.Main) {
+                emitCharacterUIData(resp)
             }
+
+        }
+    }
+
+    private fun emitCharacterUIData(kResponse: KResponse<List<Character>>) {
+        liveDataHandler.parse(kResponse) { data ->
+            data?.let {
+                characterItems.addAll(CharacterToUIMapper().mapFrom(it))
+                _characterLiveData.value = characterItems
+            } ?: {
+                _failureLiveData.value = IllegalStateException()
+            }()
         }
     }
 

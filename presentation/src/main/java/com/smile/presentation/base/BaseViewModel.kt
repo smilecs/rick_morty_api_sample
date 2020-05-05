@@ -17,13 +17,13 @@ abstract class BaseViewModel : ViewModel() {
                 + viewModelJob
     )
 
-    protected val uiScope = CoroutineScope(
+    private val uiScope = CoroutineScope(
         Dispatchers.Main
                 + uiJob
     )
 
-    protected val failure: MutableLiveData<Exception> = MutableLiveData()
-    val failureLiveData: LiveData<Exception> = failure
+    protected val _failureLiveData: MutableLiveData<Exception> = MutableLiveData()
+    val failureLiveData: LiveData<Exception> = _failureLiveData
 
 
     fun handler(action: (() -> Any)? = null): CoroutineExceptionHandler {
@@ -43,7 +43,7 @@ abstract class BaseViewModel : ViewModel() {
     }
 
     open fun onInternetError() {
-        failure.value = ErrorClass.NoInternet
+        _failureLiveData.value = ErrorClass.NoInternet
     }
 
     override fun onCleared() {
