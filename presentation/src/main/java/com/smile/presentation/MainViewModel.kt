@@ -22,6 +22,7 @@ class MainViewModel @Inject constructor(
     private val _characterLiveData = MutableLiveData<List<CharacterUI>>()
     val characterLiveData: LiveData<List<CharacterUI>> = _characterLiveData
     private val liveDataHandler = LiveDataHandler(failure)
+    val characterItems = mutableListOf<CharacterUI>()
 
     init {
         getCharacters()
