@@ -3,9 +3,9 @@ package com.smile.presentation
 import android.graphics.drawable.Drawable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.past3.ketro.kcore.model.Wrapper
-import com.past3.ketro.kcore.model.mapObject
-import com.smile.domain.usecase.GetCharactersCacheUseCase
+import com.past3.ketro.api.LiveDataHandler
+import com.past3.ketro.kcore.model.KResponse
+import com.smile.domain.entities.Character
 import com.smile.domain.usecase.GetCharactersUseCase
 import com.smile.domain.usecase.UpdateImageParams
 import com.smile.domain.usecase.UpdateLocalImageUseCase
@@ -13,36 +13,44 @@ import com.smile.presentation.base.BaseViewModel
 import com.smile.presentation.uimodel.CharacterToUIMapper
 import com.smile.presentation.uimodel.CharacterUI
 import com.smile.presentation.util.drawableToBase64
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
     private val getCharactersUseCase: GetCharactersUseCase,
-    private val loadCharactersCacheUseCase: GetCharactersCacheUseCase,
     private val imageUseCase: UpdateLocalImageUseCase
 ) : BaseViewModel() {
 
-    private val _characterLiveData = MutableLiveData<Wrapper<List<CharacterUI>>>()
-    val characterLiveData: LiveData<Wrapper<List<CharacterUI>>> = _characterLiveData
+    private val _characterLiveData = MutableLiveData<List<CharacterUI>>()
+    val characterLiveData: LiveData<List<CharacterUI>> = _characterLiveData
+    private val liveDataHandler = LiveDataHandler(_failureLiveData)
+    val characterItems = mutableListOf<CharacterUI>()
 
     init {
         getCharacters()
     }
 
     private fun getCharacters() {
-        scope.launch(handler(::loadCachedCharacters)) {
-            val resp = getCharactersUseCase(Unit).run {
-                CharacterToUIMapper().mapObject(this)
+        scope.launch(handler()) {
+            val resp: KResponse<List<Character>> = getCharactersUseCase()
+            withContext(Dispatchers.Main) {
+                emitCharacterUIData(resp)
             }
-            uiScope.launch { _characterLiveData.value = resp }
+
         }
     }
 
-    private fun loadCachedCharacters() {
-        scope.launch(handler()) {
-            val cachedData = loadCharactersCacheUseCase(Unit)
-            CharacterToUIMapper().mapObject(Wrapper(data = cachedData))
-                .run { _characterLiveData.postValue(this) }
+    private fun emitCharacterUIData(kResponse: KResponse<List<Character>>) {
+        liveDataHandler.parse(kResponse) { data ->
+            data?.let {
+                characterItems.addAll(CharacterToUIMapper().mapFrom(it))
+                _characterLiveData.value = characterItems
+            } ?: {
+                _failureLiveData.value = IllegalStateException()
+            }()
         }
     }
 

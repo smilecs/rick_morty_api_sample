@@ -6,9 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
-import com.past3.ketro.api.Kobserver
 import com.smile.presentation.adapter.CharacterAdapter
 import com.smile.presentation.base.BaseFragment
 import com.smile.presentation.uimodel.CharacterUI
@@ -23,7 +23,6 @@ class MainActivityFragment : BaseFragment() {
 
     private lateinit var viewModel: MainViewModel
     private var characterAdapter: CharacterAdapter? = null
-    private val characterItems = mutableListOf<CharacterUI>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,35 +41,33 @@ class MainActivityFragment : BaseFragment() {
     }
 
     private fun initViews() {
-        characterAdapter =
-            CharacterAdapter(characterItems, ::onImageLoaded, ::transitionToDetailView)
+        characterAdapter = CharacterAdapter(
+            viewModel.characterItems,
+            ::onImageLoaded,
+            ::transitionToDetailView
+        )
         recyclerView.layoutManager = GridLayoutManager(
             context,
-            2, GridLayoutManager.VERTICAL,
+            2,
+            GridLayoutManager.VERTICAL,
             false
         )
         recyclerView.setHasFixedSize(true)
         recyclerView.adapter = characterAdapter
         populateData()
+        errorHandler()
     }
 
     private fun populateData() {
-        viewModel.characterLiveData.observe(this,
-            object : Kobserver<List<CharacterUI>>() {
+        viewModel.characterLiveData.observe(viewLifecycleOwner, Observer {
+            characterAdapter?.notifyDataSetChanged()
+        })
+    }
 
-                override fun onException(exception: Exception) {
-                    super.onException(exception)
-                    val msg = exception.message ?: getString(R.string.error_generic)
-                    Toast.makeText(context, msg, Toast.LENGTH_LONG)
-                        .show()
-                }
-
-                override fun onSuccess(data: List<CharacterUI>) {
-                    characterItems.addAll(data)
-                    characterAdapter?.notifyDataSetChanged()
-                }
-
-            })
+    private fun errorHandler() {
+        viewModel.failureLiveData.observe(viewLifecycleOwner, Observer {
+            Toast.makeText(context, getString(R.string.error_generic), Toast.LENGTH_LONG).show()
+        })
     }
 
     private fun transitionToDetailView(data: CharacterUI) {
