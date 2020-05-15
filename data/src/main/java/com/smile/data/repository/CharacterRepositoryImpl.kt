@@ -1,11 +1,11 @@
 package com.smile.data.repository
 
 import com.past3.ketro.kcore.model.KResponse
-import com.past3.ketro.kcore.model.Wrapper
+import com.smile.domain.entities.Character
 import com.smile.domain.repository.CharacterLocalDataSource
 import com.smile.domain.repository.CharacterRemoteDataSource
-import com.smile.domain.entities.Character
 import com.smile.domain.repository.CharacterRepository
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
 class CharacterRepositoryImpl @Inject constructor(
@@ -13,18 +13,7 @@ class CharacterRepositoryImpl @Inject constructor(
     private val localDataSource: CharacterLocalDataSource
 ) : CharacterRepository {
 
-    override suspend fun getCharacterList(): KResponse<List<Character>> {
-        val resp = getCharactersRemote()
-        val data = (resp as? KResponse.Success)?.data
-        val characterList = data ?: loadCached()
-        return if (characterList.isEmpty()) {
-            resp
-        } else {
-            KResponse.Success(data = loadCached(), statusCode = resp.statusCode)
-        }
-    }
-
-    override suspend fun getCharactersRemote(): KResponse<List<Character>> {
+    override suspend fun getCharacters(): KResponse<List<Character>> {
         val resp = remoteDataSource.getCharacters()
         (resp as? KResponse.Success)?.data?.let {
             localDataSource.save(it)
@@ -36,7 +25,7 @@ class CharacterRepositoryImpl @Inject constructor(
         localDataSource.saveImage(id, image)
     }
 
-    override suspend fun loadCached(): List<Character> =
+    override suspend fun loadCached(): Flow<List<Character>> =
         localDataSource.getCharacters()
 
 }

@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.past3.ketro.api.LiveDataHandler
 import com.past3.ketro.kcore.model.KResponse
 import com.smile.domain.entities.Character
+import com.smile.domain.usecase.GetCharactersCacheUseCase
 import com.smile.domain.usecase.GetCharactersUseCase
 import com.smile.domain.usecase.UpdateImageParams
 import com.smile.domain.usecase.UpdateLocalImageUseCase
@@ -13,13 +14,12 @@ import com.smile.presentation.base.BaseViewModel
 import com.smile.presentation.uimodel.CharacterToUIMapper
 import com.smile.presentation.uimodel.CharacterUI
 import com.smile.presentation.util.drawableToBase64
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.lang.IllegalStateException
 import javax.inject.Inject
 
 class MainViewModel @Inject constructor(
+    private val loadCharactersUseCase: GetCharactersCacheUseCase,
     private val getCharactersUseCase: GetCharactersUseCase,
     private val imageUseCase: UpdateLocalImageUseCase
 ) : BaseViewModel() {
@@ -30,27 +30,23 @@ class MainViewModel @Inject constructor(
     val characterItems = mutableListOf<CharacterUI>()
 
     init {
-        getCharacters()
+        loadCharacters()
     }
 
-    private fun getCharacters() {
+    fun refreshCharacters() {
         scope.launch(handler()) {
             val resp: KResponse<List<Character>> = getCharactersUseCase()
-            withContext(Dispatchers.Main) {
-                emitCharacterUIData(resp)
-            }
-
+            liveDataHandler.parse(resp) {}
         }
     }
 
-    private fun emitCharacterUIData(kResponse: KResponse<List<Character>>) {
-        liveDataHandler.parse(kResponse) { data ->
-            data?.let {
+    private fun loadCharacters() {
+        uiScope.launch {
+            loadCharactersUseCase().collect {
+                characterItems.clear()
                 characterItems.addAll(CharacterToUIMapper().mapFrom(it))
                 _characterLiveData.value = characterItems
-            } ?: {
-                _failureLiveData.value = IllegalStateException()
-            }()
+            }
         }
     }
 

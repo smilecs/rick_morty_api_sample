@@ -56,6 +56,7 @@ class MainActivityFragment : BaseFragment() {
         recyclerView.adapter = characterAdapter
         populateData()
         errorHandler()
+        viewModel.refreshCharacters()
     }
 
     private fun populateData() {

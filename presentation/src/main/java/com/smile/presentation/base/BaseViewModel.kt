@@ -17,7 +17,7 @@ abstract class BaseViewModel : ViewModel() {
                 + viewModelJob
     )
 
-    private val uiScope = CoroutineScope(
+    val uiScope = CoroutineScope(
         Dispatchers.Main
                 + uiJob
     )
