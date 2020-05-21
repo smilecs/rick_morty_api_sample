@@ -36,6 +36,9 @@ abstract class BaseViewModel : ViewModel() {
                     }
                 }
                 else -> {
+                    (throwable as? Exception)?.let {
+                        _failureLiveData.value = it
+                    }
                     throwable.printStackTrace()
                 }
             }

@@ -24,10 +24,9 @@ class MainViewModel @Inject constructor(
     private val imageUseCase: UpdateLocalImageUseCase
 ) : BaseViewModel() {
 
-    private val _characterLiveData = MutableLiveData<List<CharacterUI>>()
+    private val _characterLiveData = MutableLiveData<List<CharacterUI>>(emptyList())
     val characterLiveData: LiveData<List<CharacterUI>> = _characterLiveData
     private val liveDataHandler = LiveDataHandler(_failureLiveData)
-    val characterItems = mutableListOf<CharacterUI>()
 
     init {
         loadCharacters()
@@ -43,9 +42,7 @@ class MainViewModel @Inject constructor(
     private fun loadCharacters() {
         uiScope.launch {
             loadCharactersUseCase().collect {
-                characterItems.clear()
-                characterItems.addAll(CharacterToUIMapper().mapFrom(it))
-                _characterLiveData.value = characterItems
+                _characterLiveData.value = CharacterToUIMapper().mapFrom(it)
             }
         }
     }
