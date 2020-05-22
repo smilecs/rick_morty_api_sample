@@ -10,6 +10,6 @@ class GetCharactersUseCase @Inject constructor(
 ) {
 
     suspend operator fun invoke(): KResponse<List<Character>> =
-        characterRepository.getCharacterList()
+        characterRepository.getCharacters()
 
 }

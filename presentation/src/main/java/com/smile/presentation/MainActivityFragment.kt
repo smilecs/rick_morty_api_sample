@@ -42,7 +42,7 @@ class MainActivityFragment : BaseFragment() {
 
     private fun initViews() {
         characterAdapter = CharacterAdapter(
-            viewModel.characterItems,
+            requireNotNull(viewModel.characterLiveData.value),
             ::onImageLoaded,
             ::transitionToDetailView
         )
@@ -56,6 +56,7 @@ class MainActivityFragment : BaseFragment() {
         recyclerView.adapter = characterAdapter
         populateData()
         errorHandler()
+        viewModel.refreshCharacters()
     }
 
     private fun populateData() {

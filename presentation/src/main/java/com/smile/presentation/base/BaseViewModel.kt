@@ -17,7 +17,7 @@ abstract class BaseViewModel : ViewModel() {
                 + viewModelJob
     )
 
-    private val uiScope = CoroutineScope(
+    val uiScope = CoroutineScope(
         Dispatchers.Main
                 + uiJob
     )
@@ -36,6 +36,9 @@ abstract class BaseViewModel : ViewModel() {
                     }
                 }
                 else -> {
+                    (throwable as? Exception)?.let {
+                        _failureLiveData.value = it
+                    }
                     throwable.printStackTrace()
                 }
             }
