@@ -3,18 +3,17 @@ package com.smile.data.repository
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.nhaarman.mockitokotlin2.whenever
+import com.past3.ketro.kcore.model.KResponse
 import com.smile.domain.repository.CharacterLocalDataSource
 import com.smile.domain.repository.CharacterRemoteDataSource
 import com.smile.domain.repository.CharacterRepository
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.verification.VerificationMode
 
 @RunWith(MockitoJUnitRunner::class)
 class CharacterRepositoryImplTest {
@@ -23,6 +22,7 @@ class CharacterRepositoryImplTest {
 
     @Mock
     private lateinit var remoteDataSource: CharacterRemoteDataSource
+
     @Mock
     private lateinit var localDataSource: CharacterLocalDataSource
 
@@ -36,7 +36,7 @@ class CharacterRepositoryImplTest {
         runBlocking {
             whenever(remoteDataSource.getCharacters()).thenReturn(getWrapperCharacterList())
 
-            val data = characterRepositoryImpl.getCharacterList()
+            val data = characterRepositoryImpl.getCharacters()
 
             verify(localDataSource).save(getCharacterList())
             assertNotNull(data)
@@ -48,10 +48,9 @@ class CharacterRepositoryImplTest {
         runBlocking {
             whenever(remoteDataSource.getCharacters()).thenReturn(getWrapperErrorCharacterList())
 
-            val data = characterRepositoryImpl.getCharacterList()
+            val data = characterRepositoryImpl.getCharacters()
             verifyZeroInteractions(localDataSource)
-            assertNull(data.data)
-            assertNotNull(data.exception)
+            assert(data is KResponse.Failure)
         }
     }
 

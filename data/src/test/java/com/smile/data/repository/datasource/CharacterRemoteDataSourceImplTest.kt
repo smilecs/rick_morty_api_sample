@@ -2,6 +2,7 @@ package com.smile.data.repository.datasource
 
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
+import com.past3.ketro.kcore.model.KResponse
 import com.smile.data.api.RickMortyAPI
 import com.smile.data.repository.getApiCharacterResponse
 import com.smile.data.repository.provideApiFailCharacterResponse
@@ -33,7 +34,7 @@ class CharacterRemoteDataSourceImplTest {
             whenever(rickMortyAPI.getCharacters()).thenReturn(getApiCharacterResponse())
             val data = characterRemoteDataSourceImpl.getCharacters()
             verify(rickMortyAPI).getCharacters()
-            Assert.assertNotNull(data)
+            Assert.assertNotNull(data is KResponse.Success)
         }
     }
 
@@ -43,8 +44,7 @@ class CharacterRemoteDataSourceImplTest {
             whenever(rickMortyAPI.getCharacters()).thenReturn(provideApiFailCharacterResponse())
             val data = characterRemoteDataSourceImpl.getCharacters()
             verify(rickMortyAPI).getCharacters()
-            Assert.assertNull(data.data)
-            Assert.assertNotNull(data.exception)
+            assert(data is KResponse.Failure)
         }
     }
 

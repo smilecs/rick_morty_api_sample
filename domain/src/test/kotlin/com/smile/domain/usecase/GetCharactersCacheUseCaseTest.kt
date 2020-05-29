@@ -3,6 +3,8 @@ package com.smile.domain.usecase
 import com.nhaarman.mockitokotlin2.whenever
 import com.smile.domain.getCharacterList
 import com.smile.domain.repository.CharacterRepository
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
@@ -15,6 +17,7 @@ import org.mockito.junit.MockitoJUnitRunner
 class GetCharactersCacheUseCaseTest {
 
     private lateinit var getCharactersCacheUseCase: GetCharactersCacheUseCase
+
     @Mock
     private lateinit var characterRepository: CharacterRepository
 
@@ -26,9 +29,11 @@ class GetCharactersCacheUseCaseTest {
     @Test
     fun `invoke should return Character List`() {
         runBlocking {
-            whenever(characterRepository.loadCached()).thenReturn(getCharacterList())
-            val resp = getCharactersCacheUseCase.invoke(Unit)
-            Assert.assertEquals(resp, getCharacterList())
+            whenever(characterRepository.loadCached()).thenReturn(flowOf(getCharacterList()))
+            val resp = getCharactersCacheUseCase.invoke()
+            resp.collect {
+                Assert.assertNotNull(it)
+            }
         }
     }
 

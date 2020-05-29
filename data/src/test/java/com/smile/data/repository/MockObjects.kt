@@ -1,26 +1,24 @@
 package com.smile.data.repository
 
-import com.past3.ketro.kcore.model.Wrapper
+import com.past3.ketro.kcore.model.KResponse
 import com.smile.data.api.CharactersResponse
 import com.smile.data.api.CharactersResultResponse
 import com.smile.data.db.CharacterEntity
 import com.smile.data.mappers.CharacterEntityMapper
 import com.smile.domain.entities.Character
-import okhttp3.MediaType
 import okhttp3.ResponseBody
 import retrofit2.Response
-import java.lang.Exception
 
 const val DEFAULT_ID = 1
 const val EMPTY_STRING = ""
 
 fun getWrapperCharacterList() =
-    Wrapper(
+    KResponse.Success(
         data = getCharacterList()
     )
 
 fun getWrapperErrorCharacterList() =
-    Wrapper<List<Character>>(exception = Exception())
+    KResponse.Failure(exception = Exception())
 
 fun getCharacterList() =
     listOf<Character>()
