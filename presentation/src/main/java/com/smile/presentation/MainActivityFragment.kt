@@ -42,7 +42,7 @@ class MainActivityFragment : BaseFragment() {
 
     private fun initViews() {
         characterAdapter = CharacterAdapter(
-            requireNotNull(viewModel.characterLiveData.value),
+            viewModel.adapterList,
             ::onImageLoaded,
             ::transitionToDetailView
         )
@@ -56,11 +56,12 @@ class MainActivityFragment : BaseFragment() {
         recyclerView.adapter = characterAdapter
         populateData()
         errorHandler()
-        viewModel.refreshCharacters()
     }
 
     private fun populateData() {
         viewModel.characterLiveData.observe(viewLifecycleOwner, Observer {
+            viewModel.adapterList.clear()
+            viewModel.adapterList.addAll(it)
             characterAdapter?.notifyDataSetChanged()
         })
     }
@@ -84,5 +85,4 @@ class MainActivityFragment : BaseFragment() {
     private fun onImageLoaded(id: Int, drawable: Drawable) {
         viewModel.updateLocalImage(id, drawable)
     }
-
 }

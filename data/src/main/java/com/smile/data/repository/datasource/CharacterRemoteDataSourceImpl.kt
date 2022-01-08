@@ -1,6 +1,7 @@
 package com.smile.data.repository.datasource
 
 
+import android.util.Log
 import com.past3.ketro.api.Request
 import com.past3.ketro.kcore.model.KResponse
 import com.past3.ketro.kcore.model.mapObject
@@ -27,5 +28,4 @@ class CharacterRemoteDataSourceImpl @Inject constructor(
         return CharacterResultResponseMapper()
             .mapObject(req)
     }
-
 }

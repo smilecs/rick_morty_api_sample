@@ -1,12 +1,14 @@
 package com.smile.data.mappers
 
+import android.util.Log
 import com.past3.ketro.kcore.model.KMapper
 import com.smile.data.api.CharactersResultResponse
 import com.smile.domain.entities.Character
 
 class CharacterResultResponseMapper : KMapper<CharactersResultResponse, List<Character>>() {
-    override fun mapFrom(from: CharactersResultResponse): List<Character> =
-        from.results.flatMap {
+
+    override fun mapFrom(from: CharactersResultResponse): List<Character> {
+        return from.results.flatMap {
             listOf(
                 Character(
                     id = it.id,
@@ -19,6 +21,6 @@ class CharacterResultResponseMapper : KMapper<CharactersResultResponse, List<Cha
                     image = it.image
                 )
             )
-
         }
+    }
 }
