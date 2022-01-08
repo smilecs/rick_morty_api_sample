@@ -60,5 +60,4 @@ class DetailCharacterFragment : BaseFragment() {
         typeTxtView.text = getString(R.string.type_label, characterUI.type)
         statusTxtView.text = getString(R.string.status_label, characterUI.status)
     }
-
 }

@@ -1,6 +1,7 @@
 package com.smile.presentation
 
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.past3.ketro.api.LiveDataHandler
@@ -27,6 +28,7 @@ class MainViewModel @Inject constructor(
     private val _characterLiveData = MutableLiveData<List<CharacterUI>>(emptyList())
     val characterLiveData: LiveData<List<CharacterUI>> = _characterLiveData
     private val liveDataHandler = LiveDataHandler(_failureLiveData)
+    val adapterList = mutableListOf<CharacterUI>()
 
     init {
         loadCharacters()

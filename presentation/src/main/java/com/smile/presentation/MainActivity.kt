@@ -19,7 +19,7 @@ class MainActivity : DaggerAppCompatActivity() {
             val fragment =
                 findFragmentByTag(MAIN_FRAGMENT_TAG) ?: MainActivityFragment()
             beginTransaction()
-                .replace(R.id.container, fragment)
+                .replace(R.id.container, fragment, MAIN_FRAGMENT_TAG)
                 .commit()
         }
     }

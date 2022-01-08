@@ -1,5 +1,6 @@
 package com.smile.data.repository
 
+import android.util.Log
 import com.past3.ketro.kcore.model.KResponse
 import com.smile.domain.entities.Character
 import com.smile.domain.repository.CharacterLocalDataSource
@@ -15,6 +16,7 @@ class CharacterRepositoryImpl @Inject constructor(
 
     override suspend fun getCharacters(): KResponse<List<Character>> {
         val resp = remoteDataSource.getCharacters()
+        Log.i("chars22", resp.statusCode.toString())
         (resp as? KResponse.Success)?.data?.let {
             localDataSource.save(it)
         }
