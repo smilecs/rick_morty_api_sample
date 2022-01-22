@@ -25,6 +25,10 @@ jobs:
       # Checkout the code as the first step.
       - checkout
 
+      - run:
+          name: show directory
+          command: 
+            ls
       # The next step will run the unit tests
       - android/run-tests:
           test-command: .././gradlew lint testDebug --continue
