@@ -35,11 +35,10 @@ android {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.core:core-ktx:1.0.2'
-    implementation "past3.smilecs.ketro:ketro:$ketro"
     implementation "javax.inject:javax.inject:$javaxInjectVersion"
     implementation "com.squareup.retrofit2:retrofit:$retrofit"
     implementation "com.squareup.okhttp3:logging-interceptor:$interceptor"
