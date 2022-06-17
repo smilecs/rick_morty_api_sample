@@ -13,7 +13,6 @@ import coil.transform.CircleCropTransformation
 import com.smile.presentation.base.BaseFragment
 import com.smile.presentation.uimodel.CharacterUI
 import com.smile.presentation.util.getErrorOrCacheDrawable
-import kotlinx.android.synthetic.main.detail_view_fragment.*
 
 private const val DATA_UI_KEY = "DATA_UI_KEY_CHARACTER"
 const val DETAIL_CHARACTER_TAG = "DETAIL_CHARACTER_TAG"
@@ -43,21 +42,21 @@ class DetailCharacterFragment : BaseFragment() {
     }
 
     private fun initViews(characterUI: CharacterUI) {
-        bannerImgView.load(characterUI.image) {
-            crossfade(true)
-            error(
-                getErrorOrCacheDrawable(
-                    characterUI.base64,
-                    resources
-                )
-            )
-            placeholder(R.drawable.ic_directions_run_black_24dp)
-            transformations(CircleCropTransformation())
-            scale(Scale.FIT)
-        }
-        nameTxtView.text = getString(R.string.name_label, characterUI.name)
-        genderTxtView.text = getString(R.string.gender_label, characterUI.gender)
-        typeTxtView.text = getString(R.string.type_label, characterUI.type)
-        statusTxtView.text = getString(R.string.status_label, characterUI.status)
+//        bannerImgView.load(characterUI.image) {
+//            crossfade(true)
+//            error(
+//                getErrorOrCacheDrawable(
+//                    characterUI.base64,
+//                    resources
+//                )
+//            )
+//            placeholder(R.drawable.ic_directions_run_black_24dp)
+//            transformations(CircleCropTransformation())
+//            scale(Scale.FIT)
+//        }
+//        nameTxtView.text = getString(R.string.name_label, characterUI.name)
+//        genderTxtView.text = getString(R.string.gender_label, characterUI.gender)
+//        typeTxtView.text = getString(R.string.type_label, characterUI.type)
+//        statusTxtView.text = getString(R.string.status_label, characterUI.status)
     }
 }

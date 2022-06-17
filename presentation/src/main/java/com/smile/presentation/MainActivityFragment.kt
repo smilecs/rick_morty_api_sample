@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.smile.presentation.adapter.CharacterAdapter
 import com.smile.presentation.base.BaseFragment
 import com.smile.presentation.uimodel.CharacterUI
-import kotlinx.android.synthetic.main.fragment_main.*
 
 /**
  * A placeholder fragment containing a simple view.
@@ -41,21 +40,21 @@ class MainActivityFragment : BaseFragment() {
     }
 
     private fun initViews() {
-        characterAdapter = CharacterAdapter(
-            viewModel.adapterList,
-            ::onImageLoaded,
-            ::transitionToDetailView
-        )
-        recyclerView.layoutManager = GridLayoutManager(
-            context,
-            2,
-            GridLayoutManager.VERTICAL,
-            false
-        )
-        recyclerView.setHasFixedSize(true)
-        recyclerView.adapter = characterAdapter
-        populateData()
-        errorHandler()
+//        characterAdapter = CharacterAdapter(
+//            viewModel.adapterList,
+//            ::onImageLoaded,
+//            ::transitionToDetailView
+//        )
+//        recyclerView.layoutManager = GridLayoutManager(
+//            context,
+//            2,
+//            GridLayoutManager.VERTICAL,
+//            false
+//        )
+//        recyclerView.setHasFixedSize(true)
+//        recyclerView.adapter = characterAdapter
+//        populateData()
+//        errorHandler()
     }
 
     private fun populateData() {

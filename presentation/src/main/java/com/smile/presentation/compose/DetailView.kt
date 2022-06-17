@@ -11,15 +11,22 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.smile.presentation.uimodel.CharacterUI
 
+//@Composable
+//fun DetailView(characterUI: CharacterUI) {
+//    Column(modifier = Modifier.fillMaxWidth()) {
+//        Text(characterUI.name, modifier = Modifier.paddingFromBaseline(top = 8.dp))
+//    }
+//}
+
 @Composable
-fun DetailView(characterUI: CharacterUI) {
-    //Column(modifier = Modifier.fillMaxWidth()) {
-        Text(characterUI.name, modifier = Modifier.paddingFromBaseline(top = 8.dp))
-   // }
+fun Greeting() {
+    Text("Hello name")
 }
+
 
 @Preview
 @Composable
-fun showDetailView(){
-    DetailView(CharacterUI(1, "Smile", "Immortal", "", "Male", "", null))
+fun ShowDetailView() {
+    Greeting()
+    // DetailView(CharacterUI(1, "Smile", "Immortal", "", "Male", "", null))
 }
